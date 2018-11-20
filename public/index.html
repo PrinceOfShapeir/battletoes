@@ -1,0 +1,328 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>BattleToes</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/synaptic/1.1.4/synaptic.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+  <script src="/scripts/main.js"></script>
+  <link rel="stylesheet" href="/styles/index.css">
+</head>
+
+  <script>
+	var board = new Array(9).fill(.5);
+	let computerToken;
+	var Neuron = synaptic.Neuron,
+	Layer = synaptic.Layer,
+	Network = synaptic.Network,
+	Trainer = synaptic.Trainer,
+	Architect = synaptic.Architect;
+	var aiActive;
+	let count = 0;
+	let trainingData = [];
+		
+		
+
+	let trainer;
+	  
+    let playerToken = false;
+    //sessionStorage.setItem("playerToken", playerToken);
+   
+    
+    function setToken(token){
+          
+      //sessionStorage.setItem("playerToken", token);
+      if(token<1){
+        playerToken = "O";
+        computerToken = "X";
+        
+      }
+       else {
+         playerToken = "X";
+         computerToken = "O";
+         }
+    }
+    
+    function clicked(id){  
+      
+      if(playerToken){
+      
+      if(!document.getElementById(id).innerHTML){
+        //playerToken = sessionStorage.getItem("playerToken");
+        //square.id.value = playerToken;
+        document.getElementById("turn").innerHTML = "Did this";
+        document.getElementById(id).innerHTML = playerToken;
+        //console.log("Did this.");
+        //console.log(playerToken);
+        console.log("changing" + board[id-1] + "to 0");
+        board[id-1] = 0;
+        count++;
+        //console.log(board);
+        aiToPlay(board);
+      }
+        else {
+          
+          document.getElementById("turn").innerHTML = "Move Already Taken!!!";
+        }
+      //do something
+      }
+      else{
+        document.getElementById("turn").innerHTML = "Select Token!!";
+      }
+    }
+    	  
+    	  function initStats(){
+	  if(!localStorage.gamesPlayed){
+		  
+		  localStorage.gamesPlayed = 0;
+		  localStorage.computerWins = 0;
+		  localStorage.humanWins = 0;
+		  localStorage.ties = 0;
+	  }
+	  else {
+		  			document.getElementById("stats").innerHTML = "Computer Wins: "+localStorage.computerWins+
+			"		Human Wins: "+localStorage.humanWins+
+			"		Ties: "+localStorage.ties+
+			"			Games Played: "+localStorage.gamesPlayed+"";
+			 
+		  
+	  }
+  }
+		
+	  
+    
+  </script>
+
+<script>function setAi(){
+	
+		if(!localStorage.getItem("saved")){
+			
+	
+			  $.post("loadAi", function(data) {
+				//console.log(data);
+			  let a = JSON.parse(data);
+			  aiActive = Network.fromJSON(a);
+			  trainer = new Trainer(aiActive);
+			  document.getElementById("turn").innerHTML = 
+			  "<button id='play2' onclick = 'aiToPlay(board)' >click Here To Play Second!</button> Or Just Start Playing";
+		
+		  }).catch((e)=>{
+			  
+			  console.log("fucked up");
+			  });
+		  
+			 localStorage.saved = JSON.stringify(aiActive.toJSON());
+			
+		  }
+		  
+		  else {
+			aiActive = Network.fromJSON(JSON.parse(localStorage.saved));
+			trainer = new Trainer(aiActive);
+			  document.getElementById("turn").innerHTML = 
+			  "Saved Char Loaded <button id='play2' onclick = 'aiToPlay(board)' >click Here To Play Second!</button> Or Just Start Playing";
+	
+		  }
+	  }
+	  
+	  
+	 </script>    
+	 
+	 
+	 <script>
+	 
+	 function aiToPlay(b){
+		 console.log("AI Is Playing");
+
+		 if(!check()){
+			 
+						if(trainingData.length>0){
+			//let learner = Network.toJSON
+			//console.log(trainingData);
+			trainer.train(trainingData,{
+				
+				iterations: 200,
+				cost: Trainer.cost.MSE
+				
+				
+				});
+			localStorage.saved = JSON.stringify(aiActive.toJSON());
+			
+		}
+			
+		
+			 
+		 let movesRated = new Array(9).fill(0);
+		 for(i in b){
+			 
+			if(b[i]==.5){
+			 let newMove = b.slice();
+			 newMove[i] = 1;
+			 let newMoveRating = aiActive.activate(newMove);
+			 //console.log(newMoveRating);
+			 movesRated[i] = newMoveRating[0];
+			// console.log(newMoveRating);
+		 }/*
+		 else {
+			 movesRated[i]=0;
+		 }*/
+	 }
+	 console.log(movesRated);
+	 let move = movesRated.indexOf(Math.max.apply(Math,movesRated))+1;
+		 
+		 board[move-1] = 1;
+		 if(!computerToken){
+			 computerToken = "X";
+		 }
+		 console.log(move);
+		 document.getElementById(move).innerHTML = computerToken;
+		 count++;
+		 
+		 check();
+
+}
+	 
+	 }
+		 function check(){
+			 		
+			 		if(win(board)||win(flip(board))||count==board.length){
+						let boardcopy = board.slice();
+			 
+			 if(win(boardcopy)){
+				 
+				 trainingData = trainingData.concat([
+				 {
+				 input: boardcopy,
+				 output: [1]
+				},
+				{
+				 input: flip(boardcopy),
+				 output: [0]
+				 }
+				 ])
+				  localStorage.gamesPlayed = parseInt(localStorage.gamesPlayed)+1;
+				  localStorage.computerWins = parseInt(localStorage.computerWins)+1;
+			 }
+			 
+			 else if(win(flip(boardcopy))){
+				 
+				 trainingData = trainingData.concat([
+				 
+				 {
+					 input: flip(boardcopy),
+					 output: [1]
+				 },
+				 {
+					 input: boardcopy,
+					 output: [0]
+				 }
+				 
+				 
+				 ]);
+				 localStorage.humanWins = parseInt(localStorage.humanWins) + 1;
+				 localStorage.gamesPlayed = parseInt(localStorage.gamesPlayed) + 1;
+			 }
+			 
+			 else {
+				 
+				 localStorage.ties = parseInt(localStorage.ties)+ 1;
+				 localStorage.gamesPlayed = parseInt(localStorage.gamesPlayed)+1;
+				 
+			 }
+						
+			 
+			 document.getElementById("turn").innerHTML = "<button id='playagain' onclick='playAgain()'>play again?</button>";
+			   
+			document.getElementById("stats").innerHTML = "Computer Wins: "+localStorage.computerWins+
+			"		Human Wins: "+localStorage.humanWins+
+			"		Ties: "+localStorage.ties+
+			"			Games Played: "+localStorage.gamesPlayed+"";
+			 
+			 alert("GAME OVER");
+			 
+			 
+			 
+			 
+			 return true;
+		 }
+			 else return false;
+		 }
+		 
+		 function playAgain(){
+			 
+			 /*
+			if(trainingData.length>0){
+			//let learner = Network.toJSON
+			//console.log(trainingData);
+			trainer.trainAsync(trainingData, {
+				iterations: 200,
+			cost: Trainer.cost.MSE
+			}).then(results => {
+				
+				console.log("trained");
+				console.log(results);	
+			
+			
+			});
+			
+
+			
+		}
+		*/
+	
+			
+			 
+			 board.fill(.5);
+			 count = 0;
+			 for(let i =1; i<=board.length; i++){
+				 
+				 document.getElementById(i).innerHTML = "";
+			 }
+			  document.getElementById("turn").innerHTML = 
+			  "<button id='play2' onclick = 'aiToPlay(board)' >click Here To Play Second!</button> Or Just Start Playing";
+			
+		 }
+		 
+	 
+	 
+	 </script>
+    
+    
+   
+<body onload="initStats()">
+  <div width=100%>
+  <div id="turn"><button id='setai' onclick='setAi()'>Click here to set an AI</button></div>
+    <button id=10 onclick="setToken(this.id)">"X"</button>
+    <button id=0 onclick="setToken(this.id)">"O"</button>
+  </div>
+  <div id="stats">Computer Wins: 0		Human Wins: 0		Ties: 0			Games Played: 0</div>
+  <div class="table"> 
+ 
+    <div class="tableRow">
+    
+    <button id=1 onclick="clicked(this.id)"></button>
+    <button id=2 onclick="clicked(this.id)"></button>
+    <button id=3 onclick="clicked(this.id)"></button>
+    
+  </div>
+    <div class="tableRow">
+    
+    <button id=4 onclick="clicked(this.id)"></button>
+    <button id=5 onclick="clicked(this.id)"></button>
+    <button id=6 onclick="clicked(this.id)"></button>
+    
+  </div>
+  <div class="tableRow">
+    
+    <button id=7 onclick="clicked(this.id)"></button>
+    <button id=8 onclick="clicked(this.id)"></button>
+    <button id=9 onclick="clicked(this.id)"></button>
+    
+  </div>
+  
+  </div>
+</body>
+</html>
