@@ -1,7 +1,7 @@
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
 const fs = require('fs');
-const body-parser = require('body-parser');
+const bodyParser = require('body-parser');
 
 admin.initializeApp(functions.config().firebase);
 
@@ -12,7 +12,7 @@ const express = require('express');
 
 const frontend = express();
 
-frontend.use(body-parser.json());
+frontend.use(bodyParser.json());
 
 frontend.post("/loadAi", (req, res) => {
 	
@@ -65,7 +65,7 @@ frontend.post("/updateStats", (req, res) => {
 							
 							transaction.update(stats, newStats);
 							return Promise.resolve(newStats);
-							)};
+							});
 						}).then(result => {
 							res.send(result);
 						}).catch(e => {
@@ -85,7 +85,7 @@ frontend.post("/updateStats", (req, res) => {
 							
 							transaction.update(stats, newStats);
 							return Promise.resolve(newStats);
-							)};
+							});
 						}).then(result => {
 							res.send(result);
 						}).catch(e => {
@@ -103,7 +103,7 @@ frontend.post("/updateStats", (req, res) => {
 							
 							transaction.update(stats, newStats);
 							return Promise.resolve(newStats);
-							)};
+							});
 						}).then(result => {
 							res.send(result);
 						}).catch(e => {
