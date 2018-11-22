@@ -1,7 +1,7 @@
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
 const fs = require('fs');
-//const body-parser = require('body-parser');
+const body-parser = require('body-parser');
 
 admin.initializeApp(functions.config().firebase);
 
@@ -11,6 +11,8 @@ const express = require('express');
 
 
 const frontend = express();
+
+frontend.use(body-parser.json());
 
 frontend.post("/loadAi", (req, res) => {
 	
@@ -41,6 +43,103 @@ frontend.post("/loadAi", (req, res) => {
 	
 });
 
+frontend.post("/updateStats", (req, res) => {
+	
+	if(req.body){
+		
+		if(!isNaN(req.body.outcome)){
+			
+			let a = parseInt(req.body.outcome);
+			let stats = db.collection("stats").doc("globals");
+			
+			switch(a){
+				
+				case 0:
+					db.runTransaction( transaction => {
+						
+						return transaction.get(stats)
+						.then(doc => {
+							let newStats = {};
+							newStats.totalGames = doc.data().totalGames + 1;
+							newStats.ties = doc.data().ties + 1;
+							
+							transaction.update(stats, newStats);
+							return Promise.resolve(newStats);
+							)};
+						}).then(result => {
+							res.send(result);
+						}).catch(e => {
+							throw e;
+						});
+				
+					
+					break;
+				case 1:
+					db.runTransaction( transaction => {
+						
+						return transaction.get(stats)
+						.then(doc => {
+							let newStats = {};
+							newStats.totalGames = doc.data().totalGames + 1;
+							newStats.totalWins = doc.data().totalWins + 1;
+							
+							transaction.update(stats, newStats);
+							return Promise.resolve(newStats);
+							)};
+						}).then(result => {
+							res.send(result);
+						}).catch(e => {
+							throw e;
+						});				
+					break;
+				case -1:
+					db.runTransaction( transaction => {
+						
+						return transaction.get(stats)
+						.then(doc => {
+							let newStats = {};
+							newStats.totalGames = doc.data().totalGames + 1;
+							newStats.totalLosses = doc.data().totalLosses + 1;
+							
+							transaction.update(stats, newStats);
+							return Promise.resolve(newStats);
+							)};
+						}).then(result => {
+							res.send(result);
+						}).catch(e => {
+							throw e;
+						});
+									
+					break;
+				default:
+					break;
+				
+				
+			}
+			
+			
+			
+			
+		}
+		
+		else {
+			
+			console.log("bad input");
+		}
+		
+	}
+	
+	else {
+		
+		console.log("error updating");
+		
+	}
+	
+	
+	
+	
+});
+
 /*
 frontend.get("*", (req, res) => {
 
@@ -53,7 +152,7 @@ frontend.get("*", (req, res) => {
 
 frontend.get("/UPDATEWINNERS", (req, res) => {
 	
-	var winners = db.collection("winners");
+	let winners = db.collection("winners");
 	
 	winners.doc("fEpWPZRtv6wlroTtjN2O").set({
 		
