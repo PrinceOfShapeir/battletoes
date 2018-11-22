@@ -201,17 +201,24 @@
 			
 			switch(result){
 				
+				if(!localStorage.statsBatch){
+					
+					localStorage.statsBatch = [];
+				}
 				case 0:
 					localStorage.ties = parseInt(localStorage.ties)+ 1;
 					localStorage.gamesPlayed = parseInt(localStorage.gamesPlayed)+1;
+					let outcome = 0;
 					$.post("updateStats",{
-						outcome: 0
+						outcome: outcome
 					}).done( (newStats) => {
 						
 						updatePull(newStats);
 						
 						}).catch( (e) => {
-						
+							
+							localStorage.statsBatch.push(outcome);
+							
 							console.log("error updating from server");
 						
 						});
@@ -224,14 +231,15 @@
 				case 1:
 					localStorage.gamesPlayed = parseInt(localStorage.gamesPlayed)+1;
 					localStorage.computerWins = parseInt(localStorage.computerWins)+1;
+					let outcome = 1;
 						$.post("updateStats",{
-						outcome: 1
+						outcome: outcome
 					}).done( (newStats) => {
 						
 						updatePull(newStats);
 						
 						}).catch( (e) => {
-						
+							localStorage.statsBatch.push(outcome);
 							console.log("error updating from server");
 						
 						});
@@ -240,14 +248,15 @@
 				case -1:
 					localStorage.humanWins = parseInt(localStorage.humanWins) + 1;
 					localStorage.gamesPlayed = parseInt(localStorage.gamesPlayed) + 1;
+					outcome = -1;
 					$.post("updateStats",{
-						outcome: -1
+						outcome: outcome
 					}).done( (newStats) => {
 						
 						updatePull(newStats);
 						
 						}).catch( (e) => {
-						
+							localStorage.statsBatch.push(outcome);
 							console.log("error updating from server");
 						
 						});
