@@ -102,7 +102,7 @@
 		if(!localStorage.getItem("saved")){
 			
 	
-			  $.post("loadAi", function(data) {
+			  $.post("loadAi", (data) => {
 				//console.log(data);
 			  let a = JSON.parse(data);
 			  aiActive = Network.fromJSON(a);
@@ -186,6 +186,85 @@
 }
 	 
 	 }
+		function updatePull(stats){
+			
+			let a = JSON.parse(stats);
+			localStorage.totalGames = a.totalGames;
+			localStorage.totalWins = a.totalWins;
+			localStorage.totalLosses = a.totalLosses;
+			localStorage.totalTies = a.totalTies;
+			
+			
+		}
+	 
+		function store(result){
+			
+			switch(result){
+				
+				case 0:
+					localStorage.ties = parseInt(localStorage.ties)+ 1;
+					localStorage.gamesPlayed = parseInt(localStorage.gamesPlayed)+1;
+					$.post("updateStats",{
+						outcome: 0
+					}).done( (newStats) => {
+						
+						updatePull(newStats);
+						
+						}).catch( (e) => {
+						
+							console.log("error updating from server");
+						
+						});
+					
+					
+					
+					;
+					break;
+					
+				case 1:
+					localStorage.gamesPlayed = parseInt(localStorage.gamesPlayed)+1;
+					localStorage.computerWins = parseInt(localStorage.computerWins)+1;
+						$.post("updateStats",{
+						outcome: 1
+					}).done( (newStats) => {
+						
+						updatePull(newStats);
+						
+						}).catch( (e) => {
+						
+							console.log("error updating from server");
+						
+						});
+					break;
+					
+				case -1:
+					localStorage.humanWins = parseInt(localStorage.humanWins) + 1;
+					localStorage.gamesPlayed = parseInt(localStorage.gamesPlayed) + 1;
+					$.post("updateStats",{
+						outcome: -1
+					}).done( (newStats) => {
+						
+						updatePull(newStats);
+						
+						}).catch( (e) => {
+						
+							console.log("error updating from server");
+						
+						});
+					break;
+					
+				default:
+				
+					break;
+				
+				
+			}
+			
+			
+			
+		}
+	 
+	 
 		 function check(){
 			 		
 			 		if(win(board)||win(flip(board))||count==board.length){
@@ -202,9 +281,10 @@
 				 input: flip(boardcopy),
 				 output: [0]
 				 }
-				 ])
-				  localStorage.gamesPlayed = parseInt(localStorage.gamesPlayed)+1;
-				  localStorage.computerWins = parseInt(localStorage.computerWins)+1;
+				 ]);
+				 
+				 store(1);
+					
 			 }
 			 
 			 else if(win(flip(boardcopy))){
@@ -222,14 +302,12 @@
 				 
 				 
 				 ]);
-				 localStorage.humanWins = parseInt(localStorage.humanWins) + 1;
-				 localStorage.gamesPlayed = parseInt(localStorage.gamesPlayed) + 1;
+				 store(-1);
 			 }
 			 
 			 else {
 				 
-				 localStorage.ties = parseInt(localStorage.ties)+ 1;
-				 localStorage.gamesPlayed = parseInt(localStorage.gamesPlayed)+1;
+				 store(0);
 				 
 			 }
 						
