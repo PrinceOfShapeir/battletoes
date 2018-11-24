@@ -92,6 +92,12 @@
 		  
 	  }
   }
+function downloading(){
+	
+	downloadContents = "data:application/octet-stream," + encodeURIComponent(localStorage.saved);
+	window.open(downloadContents, 'savedChar');
+	
+}
 		
 	  
     
@@ -99,7 +105,16 @@
 
 <script>function setAi(){
 	
-		if(!localStorage.getItem("saved")){
+	
+	let download = function(){
+	
+	document.getElementById('download').innerHTML = 
+	"<button id='downloadButton'>Click Here to Download Your Character</button>";
+	
+document.getElementById('downloadButton').addEventListener("click", downloading);
+}
+	
+			if(!localStorage.getItem("saved")){
 			
 	
 			  $.post("loadAi", (data) => {
@@ -109,22 +124,60 @@
 			  trainer = new Trainer(aiActive);
 			  document.getElementById("turn").innerHTML = 
 			  "<button id='play2' onclick = 'aiToPlay(board)' >click Here To Play Second!</button> Or Just Start Playing";
+			 localStorage.saved = JSON.stringify(aiActive.toJSON());
+			 download();
 		
 		  }).catch((e)=>{
 			  
 			  console.log("fucked up");
 			  });
 		  
-			 localStorage.saved = JSON.stringify(aiActive.toJSON());
+			
 			
 		  }
 		  
-		  else {
+		  else if(!document.getElementById('aiInput').files[0]){
 			aiActive = Network.fromJSON(JSON.parse(localStorage.saved));
 			trainer = new Trainer(aiActive);
 			  document.getElementById("turn").innerHTML = 
 			  "Saved Char Loaded <button id='play2' onclick = 'aiToPlay(board)' >click Here To Play Second!</button> Or Just Start Playing";
-	
+				download();
+		  }
+		  
+		  else if(document.getElementById('aiInput').files[0]){
+			
+			let reader = new FileReader();
+			let tests = document.getElementById('aiInput').files[0];
+			reader.onload = function (text){
+				
+				tests = text.target.result;
+				
+				
+			let testregs = /neuron/;
+			
+			if(testregs.test(tests)){
+				
+				tests = JSON.parse(tests);
+				aiActive = Network.fromJSON(tests);
+				trainer = new Trainer(aiActive);
+				
+				document.getElementById("turn").innerHTML = 
+				"Loaded from file! <button id='play2' onclick = 'aiToPlay(board)' >click Here To Play Second!</button> Or Just Start Playing";
+				
+				download();
+			}
+			
+			else {
+				
+				console.log("upload read error");
+				
+			}
+				
+			}  
+			reader.readAsText(tests);
+			
+			
+			  
 		  }
 	  }
 	  
@@ -384,6 +437,8 @@
 <body onload="initStats()">
   <div width=100%>
   <div id="turn"><button id='setai' onclick='setAi()'>Click here to set an AI</button></div>
+  <input type="file" id="aiInput">
+  <div id="download"></div>
     <button id=10 onclick="setToken(this.id)">"X"</button>
     <button id=0 onclick="setToken(this.id)">"O"</button>
   </div>
