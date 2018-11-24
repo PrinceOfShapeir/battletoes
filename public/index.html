@@ -15,6 +15,7 @@
 
   <script>
 	var board = new Array(9).fill(.5);
+	var boardCache;
 	let computerToken;
 	var Neuron = synaptic.Neuron,
 	Layer = synaptic.Layer,
@@ -45,6 +46,8 @@
          playerToken = "X";
          computerToken = "O";
          }
+       let tokens =  document.getElementById("tokens");
+       tokens.parentNode.removeChild(tokens);
     }
     
     function clicked(id){  
@@ -54,7 +57,7 @@
       if(!document.getElementById(id).innerHTML){
         //playerToken = sessionStorage.getItem("playerToken");
         //square.id.value = playerToken;
-        document.getElementById("turn").innerHTML = "Did this";
+        document.getElementById("turn").innerHTML = "Good Move!";
         document.getElementById(id).innerHTML = playerToken;
         //console.log("Did this.");
         //console.log(playerToken);
@@ -179,6 +182,10 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 			
 			  
 		  }
+		 
+		 let dbutton = document.getElementById("aiInput");
+		 dbutton.parentNode.removeChild(dbutton);
+	
 	  }
 	  
 	  
@@ -225,7 +232,7 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 	 }
 	 console.log(movesRated);
 	 let move = movesRated.indexOf(Math.max.apply(Math,movesRated))+1;
-		 
+		 boardCache = b.slice();
 		 board[move-1] = 1;
 		 if(!computerToken){
 			 computerToken = "X";
@@ -239,13 +246,20 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 }
 	 
 	 }
-		function updatePull(stats){
+		function updatePull(s){
 			
-			let a = JSON.parse(stats);
+			//let a = JSON.parse(s);
+			let a = s;
+			
 			localStorage.totalGames = a.totalGames;
 			localStorage.totalWins = a.totalWins;
 			localStorage.totalLosses = a.totalLosses;
-			localStorage.totalTies = a.totalTies;
+			localStorage.totalTies = a.ties;
+			
+			document.getElementById("globals").innerHTML = "Global Computer Wins: "+localStorage.totalWins+"<br>"+
+			"Global Human Wins: "+localStorage.totalLosses+"<br>"+
+			"Global Ties: "+localStorage.totalTies+"<br>"+
+			"Global Games Played: "+localStorage.totalGames+"";
 			
 			
 		}
@@ -333,23 +347,34 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 			 		
 			 		if(win(board)||win(flip(board))||count==board.length){
 						let boardcopy = board.slice();
+						let boardCacheCopy = boardCache.slice();
 			 
 			 if(win(boardcopy)){
 				 
 				 trainingData = trainingData.concat([
 				 {
-				 input: boardcopy,
-				 output: [1]
+					input: boardcopy,
+					output: [1]
 				},
 				{
-				 input: flip(boardcopy),
-				 output: [0]
-				 }
+					input: flip(boardcopy),
+					output: [0]
+				 },
+				 
+				 {
+					input: boardCacheCopy,
+					output: [1]
+				 },
+				 
+				 {
+					input: flip(boardCacheCopy),
+					output: [0]
+				}			 
 				 ]);
 				 
 				 store(1);
 					
-			 }
+			 }//backpropagate 1, eventually will add two
 			 
 			 else if(win(flip(boardcopy))){
 				 
@@ -362,7 +387,17 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 				 {
 					 input: boardcopy,
 					 output: [0]
-				 }
+				 },
+				 
+				 {
+					input: boardCacheCopy,
+					output: [0]
+				 },
+				 
+				 {
+					input: flip(boardCacheCopy),
+					output: [1]
+				}		
 				 
 				 
 				 ]);
@@ -378,9 +413,9 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 			 
 			 document.getElementById("turn").innerHTML = "<button id='playagain' onclick='playAgain()'>play again?</button>";
 			   
-			document.getElementById("stats").innerHTML = "Computer Wins: "+localStorage.computerWins+
-			"		Human Wins: "+localStorage.humanWins+
-			"		Ties: "+localStorage.ties+
+			document.getElementById("stats").innerHTML = "Computer Wins: "+localStorage.computerWins+"<br>"+
+			"		Human Wins: "+localStorage.humanWins+"<br>"+
+			"		Ties: "+localStorage.ties+"<br>"+
 			"			Games Played: "+localStorage.gamesPlayed+"";
 			 
 			 alert("GAME OVER");
@@ -424,7 +459,9 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 				 document.getElementById(i).innerHTML = "";
 			 }
 			  document.getElementById("turn").innerHTML = 
-			  "<button id='play2' onclick = 'aiToPlay(board)' >click Here To Play Second!</button> Or Just Start Playing";
+			  "<button id='play2' onclick = 'aiToPlay(board)' >click Here To Play Second!</button> <br> Or Just Start Playing";
+			 /* let playover = document.getElementById("gameover");
+			  playover.parentNode.removeChild(playover);*/
 			
 		 }
 		 
@@ -435,14 +472,23 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
     
    
 <body onload="initStats()">
-  <div width=100%>
+  <div width=100% class="info">
+	  <div id="leftside">
   <div id="turn"><button id='setai' onclick='setAi()'>Click here to set an AI</button></div>
   <input type="file" id="aiInput">
-  <div id="download"></div>
+
+  <div id="tokens">
     <button id=10 onclick="setToken(this.id)">"X"</button>
     <button id=0 onclick="setToken(this.id)">"O"</button>
+   </div>
+   <div id="gameover"></div>
   </div>
+  <div id="download"></div>
   <div id="stats">Computer Wins: 0		Human Wins: 0		Ties: 0			Games Played: 0</div>
+  
+  <div id="globals"></div>
+  </div>
+   
   <div class="table"> 
  
     <div class="tableRow">

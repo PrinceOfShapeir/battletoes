@@ -59,7 +59,7 @@ frontend.post("/updateStats", (req, res) => {
 						
 						return transaction.get(stats)
 						.then(doc => {
-							let newStats = {};
+							let newStats = JSON.parse(JSON.stringify(doc.data()));
 							newStats.totalGames = doc.data().totalGames + 1;
 							newStats.ties = doc.data().ties + 1;
 							
@@ -67,7 +67,9 @@ frontend.post("/updateStats", (req, res) => {
 							return Promise.resolve(newStats);
 							});
 						}).then(result => {
+							//console.log(result);
 							res.send(result);
+							
 						}).catch(e => {
 							throw e;
 						});
@@ -79,7 +81,8 @@ frontend.post("/updateStats", (req, res) => {
 						
 						return transaction.get(stats)
 						.then(doc => {
-							let newStats = {};
+							
+							let newStats = JSON.parse(JSON.stringify(doc.data()));
 							newStats.totalGames = doc.data().totalGames + 1;
 							newStats.totalWins = doc.data().totalWins + 1;
 							
@@ -97,7 +100,8 @@ frontend.post("/updateStats", (req, res) => {
 						
 						return transaction.get(stats)
 						.then(doc => {
-							let newStats = {};
+							
+							let newStats = JSON.parse(JSON.stringify(doc.data()));
 							newStats.totalGames = doc.data().totalGames + 1;
 							newStats.totalLosses = doc.data().totalLosses + 1;
 							

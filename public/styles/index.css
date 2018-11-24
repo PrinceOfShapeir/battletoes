@@ -17,6 +17,18 @@ background: teal;
   width: 100%;
 }
 
+.info {
+
+background-color: black;
+color: green;
+display: grid;
+grid-template-columns: auto auto auto auto;
+grid-template-rows: auto auto;
+height: auto;
+font-size: auto;
+}
+
+
 .table {
   background-color: black;
   top: 60px;
@@ -32,12 +44,13 @@ background: teal;
 
 
 .tableRow button{
-  font-size: 30px;
+  font-size: 10em;
+  text-align: center;
   height: 100%;
   width: 33.3%;
   background-color: gray;
   border: 1px solid black;
-  padding: 10px, 20px;
+  padding: 10px 20px;
   color: white;
   cursor: pointer;
   float: left;
