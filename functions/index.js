@@ -1,6 +1,6 @@
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
-const fs = require('fs');
+//const fs = require('fs');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const path = require('path');
@@ -169,7 +169,7 @@ frontend.get("*", (req, res) => {
 
 //this was used to initialize the collection
 
-
+/*
 frontend.get("/UPDATEWINNERS", (req, res) => {
 	
 	let winners = db.collection("winners");
@@ -189,7 +189,7 @@ frontend.get("/UPDATEWINNERS", (req, res) => {
 	
 	
 });
-
+*/
 
 
 const frontendExport = functions.https.onRequest(frontend);
