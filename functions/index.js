@@ -2,6 +2,8 @@ const admin = require('firebase-admin');
 const functions = require('firebase-functions');
 const fs = require('fs');
 const bodyParser = require('body-parser');
+const helmet = require('helmet');
+const path = require('path');
 
 admin.initializeApp(functions.config().firebase);
 
@@ -13,6 +15,20 @@ const express = require('express');
 const frontend = express();
 
 frontend.use(bodyParser.json());
+
+frontend.use(helmet({
+	contentSecurityPolicy: {
+		
+		directives: {
+			defaultSrc: ["'self'"],
+			styleSrc: ["'self'"],
+			scriptSrc: ["'self'","'unsafe-eval'", 'https://cdnjs.cloudflare.com/ajax/libs/synaptic/1.1.4/synaptic.js', 'https://code.jquery.com/jquery-3.3.1.js']
+  }
+	},
+	hidePoweredBy: {
+		setTo: 'super-nes lite server'
+	}
+}));
 
 frontend.post("/loadAi", (req, res) => {
 	
@@ -144,11 +160,11 @@ frontend.post("/updateStats", (req, res) => {
 	
 });
 
-/*
+
 frontend.get("*", (req, res) => {
 
-	res.send('<html>HERE YA GO YA BASTARD</html>');
-});*/
+	res.sendFile(path.join(__dirname, '/public/home.html'));
+});
 
 
 //this was used to initialize the collection

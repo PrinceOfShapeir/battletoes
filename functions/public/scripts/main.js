@@ -1,6 +1,4 @@
-
-	
-	var board = new Array(9).fill(.5);
+var board = new Array(9).fill(.5);
 	var boardCache;
 	let computerToken;
 	var Neuron = synaptic.Neuron,
@@ -17,6 +15,11 @@
 	let trainer;
 	  
     let playerToken = false;
+
+
+function main () {
+	
+	
     //sessionStorage.setItem("playerToken", playerToken);
    
     
@@ -36,6 +39,13 @@
        tokens.parentNode.removeChild(tokens);
     }
     
+    
+$('#tokens').on('click', 'button', (res) => {
+	setToken(res.target.id);
+
+});
+    
+    
     function clicked(id){  
       
       if(playerToken){
@@ -51,7 +61,7 @@
         board[id-1] = 0;
         count++;
         //console.log(board);
-        aiToPlay(board);
+        aiToPlay();
       }
         else {
           
@@ -62,7 +72,12 @@
       else{
         document.getElementById("turn").innerHTML = "Select Token!!";
       }
-    }
+  }
+
+$('#table').on('click', 'button', function (res){
+	clicked(res.target.id);
+
+});
     	  
 
 function downloading(){
@@ -92,26 +107,30 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 			  aiActive = Network.fromJSON(a);
 			  trainer = new Trainer(aiActive);
 			  document.getElementById("turn").innerHTML = 
-			  "<button id='play2' onclick = 'aiToPlay(board)' >click Here To Play Second!</button> Or Just Start Playing";
-			 localStorage.saved = JSON.stringify(aiActive.toJSON());
-			 download();
-		
-		  }).catch((e)=>{
+			  "<button id='play2'>click Here To Play Second!</button> Or Just Start Playing";
+			  document.getElementById('play2').addEventListener("click", aiToPlay);
+			  localStorage.saved = JSON.stringify(aiActive.toJSON());
+			  download();
+
+}).catch((e)=>{
 			  
 			  console.log("fucked up");
 			  });
-		  
-			
-			
 		  }
+		  
 		  
 		  else if(!document.getElementById('aiInput').files[0]){
 			aiActive = Network.fromJSON(JSON.parse(localStorage.saved));
 			trainer = new Trainer(aiActive);
 			  document.getElementById("turn").innerHTML = 
-			  "Saved Char Loaded <button id='play2' onclick = 'aiToPlay(board)' >click Here To Play Second!</button> Or Just Start Playing";
+			  "Saved Char Loaded <button id='play2' >click Here To Play Second!</button> Or Just Start Playing";
+				document.getElementById('play2').addEventListener("click", aiToPlay);
+							  console.log(aiActive);
 				download();
-		  }
+
+}
+
+		  
 		  
 		  else if(document.getElementById('aiInput').files[0]){
 			
@@ -130,8 +149,10 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 				aiActive = Network.fromJSON(tests);
 				trainer = new Trainer(aiActive);
 				
+				
 				document.getElementById("turn").innerHTML = 
-				"Loaded from file! <button id='play2' onclick = 'aiToPlay(board)' >click Here To Play Second!</button> Or Just Start Playing";
+				"Loaded from file! <button id='play2' >click Here To Play Second!</button> Or Just Start Playing";
+				document.getElementById('play2').addEventListener("click", aiToPlay);
 				
 				download();
 			}
@@ -156,7 +177,7 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 	  
 	  document.getElementById('setai').addEventListener("click", setAi);
 	  
-	  function aiToPlay(b){
+	  function aiToPlay(){
 		 console.log("AI Is Playing");
 
 		 if(!check()){
@@ -176,7 +197,7 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 		}
 			
 		
-			 
+			 let b = board.slice();
 		 let movesRated = new Array(9).fill(0);
 		 for(i in b){
 			 
@@ -208,6 +229,8 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 }
 	 
 	 }
+		
+
 		function updatePull(s){
 			
 			//let a = JSON.parse(s);
@@ -373,7 +396,9 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 			 }
 						
 			 
-			 document.getElementById("turn").innerHTML = "<button id='playagain' onclick='playAgain()'>play again?</button>";
+			 document.getElementById("turn").innerHTML = "<button id='playagain'>play again?</button>";
+			 	 
+			document.getElementById('playagain').addEventListener("click", playAgain);
 			   
 			document.getElementById("stats").innerHTML = "Computer Wins: "+localStorage.computerWins+"<br>"+
 			"		Human Wins: "+localStorage.humanWins+"<br>"+
@@ -421,14 +446,20 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 				 document.getElementById(i).innerHTML = "";
 			 }
 			  document.getElementById("turn").innerHTML = 
-			  "<button id='play2' onclick = 'aiToPlay(board)' >click Here To Play Second!</button> <br> Or Just Start Playing";
+			  "<button id='play2'>click Here To Play Second!</button> <br> Or Just Start Playing";
+				document.getElementById('play2').addEventListener("click", aiToPlay);
+
+}
 			 /* let playover = document.getElementById("gameover");
 			  playover.parentNode.removeChild(playover);*/
 			
-		 }
 		 
-	 
 		 
+
+
+
+
+	 }//main
 		     	  function initStats(){
 	  if(!localStorage.gamesPlayed){
 		  
@@ -446,7 +477,7 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 		  
 	  }
 	  
-
+main();
   }
   
   window.addEventListener("load", initStats());
