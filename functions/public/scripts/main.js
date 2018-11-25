@@ -1,4 +1,4 @@
-var board = new Array(9).fill(.5);
+var board = new Array(9).fill(0.5);
 	var boardCache;
 	let computerToken;
 	var Neuron = synaptic.Neuron,
@@ -74,7 +74,7 @@ $('#tokens').on('click', 'button', (res) => {
       }
   }
 
-$('#table').on('click', 'button', function (res){
+$('#table').on('click', 'button', (res)=>{
 	clicked(res.target.id);
 
 });
@@ -201,7 +201,7 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 		 let movesRated = new Array(9).fill(0);
 		 for(i in b){
 			 
-			if(b[i]==.5){
+			if(b[i]===0.5){
 			 let newMove = b.slice();
 			 newMove[i] = 1;
 			 let newMoveRating = aiActive.activate(newMove);
@@ -241,10 +241,10 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 			localStorage.totalLosses = a.totalLosses;
 			localStorage.totalTies = a.ties;
 			
-			document.getElementById("globals").innerHTML = "Global Computer Wins: "+localStorage.totalWins+"<br>"+
+			document.getElementById("globals").innerHTML = String("Global Computer Wins: "+localStorage.totalWins+"<br>"+
 			"Global Human Wins: "+localStorage.totalLosses+"<br>"+
 			"Global Ties: "+localStorage.totalTies+"<br>"+
-			"Global Games Played: "+localStorage.totalGames+"";
+			"Global Games Played: "+localStorage.totalGames);
 			
 			
 		}
@@ -330,7 +330,7 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 	 
 		 function check(){
 			 		
-			 		if(win(board)||win(flip(board))||count==board.length){
+			 		if(win(board)||win(flip(board))||count===board.length){
 						let boardcopy = board.slice();
 						let boardCacheCopy = boardCache.slice();
 			 
@@ -396,16 +396,16 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 			 }
 						
 			 
-			 document.getElementById("turn").innerHTML = "<button id='playagain'>play again?</button>";
+			 document.getElementById("turn").innerHTML = "<button id='playagain'>play again?</button> <br><br> GOOD GAME";
 			 	 
 			document.getElementById('playagain').addEventListener("click", playAgain);
 			   
-			document.getElementById("stats").innerHTML = "Computer Wins: "+localStorage.computerWins+"<br>"+
+			document.getElementById("stats").innerHTML = String("Computer Wins: "+localStorage.computerWins+"<br>"+
 			"		Human Wins: "+localStorage.humanWins+"<br>"+
 			"		Ties: "+localStorage.ties+"<br>"+
-			"			Games Played: "+localStorage.gamesPlayed+"";
+			"			Games Played: "+localStorage.gamesPlayed);
 			 
-			 alert("GAME OVER");
+			alert("GAME OVER");// eslint-disable-line no-alert
 			 
 			 
 			 
@@ -439,7 +439,7 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 	
 			
 			 
-			 board.fill(.5);
+			 board.fill(0.5);
 			 count = 0;
 			 for(let i =1; i<=board.length; i++){
 				 
@@ -469,10 +469,10 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 		  localStorage.ties = 0;
 	  }
 	  else {
-		  			document.getElementById("stats").innerHTML = "Computer Wins: "+localStorage.computerWins+
+		  			document.getElementById("stats").innerHTML = String("Computer Wins: "+localStorage.computerWins+
 			"		Human Wins: "+localStorage.humanWins+
 			"		Ties: "+localStorage.ties+
-			"			Games Played: "+localStorage.gamesPlayed+"";
+			"			Games Played: "+localStorage.gamesPlayed);
 			 
 		  
 	  }

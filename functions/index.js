@@ -43,16 +43,16 @@ frontend.post("/loadAi", (req, res) => {
 		//let payload = JSON.parse(doc.brain);
 		let brain = docRef.get('brain');
 		//brain = brain.brain;
-		res.send(brain);
+		return res.send(brain);
 		
 	}
 	
 	else {
-		console.log("not found");
+		return "not found";
 	}
 	}).catch( (e) => {
 		
-		console.log(e);
+		throw e;
 	});
 	
 	 
@@ -84,7 +84,7 @@ frontend.post("/updateStats", (req, res) => {
 							});
 						}).then(result => {
 							//console.log(result);
-							res.send(result);
+							return res.send(result);
 							
 						}).catch(e => {
 							throw e;
@@ -106,7 +106,7 @@ frontend.post("/updateStats", (req, res) => {
 							return Promise.resolve(newStats);
 							});
 						}).then(result => {
-							res.send(result);
+							return res.send(result);
 						}).catch(e => {
 							throw e;
 						});				
@@ -125,7 +125,7 @@ frontend.post("/updateStats", (req, res) => {
 							return Promise.resolve(newStats);
 							});
 						}).then(result => {
-							res.send(result);
+							return res.send(result);
 						}).catch(e => {
 							throw e;
 						});
@@ -185,7 +185,7 @@ frontend.get("/UPDATEWINNERS", (req, res) => {
 	});
 	
 	
-	res.send('<html>HERE YA GO YA BASTARD</html>');;
+	res.send('<html>HERE YA GO YA BASTARD</html>');
 	
 	
 });
