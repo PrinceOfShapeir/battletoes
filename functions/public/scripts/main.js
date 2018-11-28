@@ -455,12 +455,25 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 			
 		 
 		 
-
+function reset(){
+		 
+		 alert("game reset");
+		 
+		 playAgain();
+	 }
+	 
+	 
+	  document.getElementById("reset").innerHTML = String("<button id='resetbutton'>Reset</button>");
+	  document.getElementById("resetbutton").addEventListener("click", reset);
 
 
 
 	 }//main
-		     	  function initStats(){
+	 
+	 
+	 
+	 
+	function initStats(){
 	  if(!localStorage.gamesPlayed){
 		  
 		  localStorage.gamesPlayed = 0;
@@ -473,7 +486,7 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 			"		Human Wins: "+localStorage.humanWins+
 			"		Ties: "+localStorage.ties+
 			"			Games Played: "+localStorage.gamesPlayed);
-			 
+			
 		  
 	  }
 	  
