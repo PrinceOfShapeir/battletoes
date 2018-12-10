@@ -51,7 +51,7 @@ frontend.post("/loadAi", (req, res) => {
 		return "not found";
 	}
 	}).catch( (e) => {
-		
+		console.error(e);
 		throw e;
 	});
 	
@@ -62,10 +62,18 @@ frontend.post("/loadAi", (req, res) => {
 frontend.post("/updateStats", (req, res) => {
 	
 	if(req.body){
-		
+		//balanced ternary input
 		if(!isNaN(req.body.outcome)){
+			let a = 2;//if unchanged, logs as error
+			try {
+				a = parseInt(req.body.outcome);
+			}
 			
-			let a = parseInt(req.body.outcome);
+			catch(e){
+				console.error(e);
+				throw e;
+			}
+			
 			let stats = db.collection("stats").doc("globals");
 			
 			switch(a){
@@ -87,6 +95,7 @@ frontend.post("/updateStats", (req, res) => {
 							return res.send(result);
 							
 						}).catch(e => {
+							console.error(e);
 							throw e;
 						});
 				
@@ -108,6 +117,7 @@ frontend.post("/updateStats", (req, res) => {
 						}).then(result => {
 							return res.send(result);
 						}).catch(e => {
+							console.error(e);
 							throw e;
 						});				
 					break;
@@ -127,31 +137,33 @@ frontend.post("/updateStats", (req, res) => {
 						}).then(result => {
 							return res.send(result);
 						}).catch(e => {
+							console.error(e);
 							throw e;
 						});
 									
 					break;
 				default:
+				console.error("unbalanced input detected" + "recieved: " + req.body );
 					break;
 				
 				
 			}
 			
 			
-			
-			
 		}
+			
+		
 		
 		else {
 			
-			console.log("bad input");
+			console.error("bad input, " + "recieved: " + req.body);
 		}
 		
 	}
 	
 	else {
 		
-		console.log("error updating");
+		console.warn("empty update request");
 		
 	}
 	

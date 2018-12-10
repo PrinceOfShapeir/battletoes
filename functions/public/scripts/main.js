@@ -457,7 +457,7 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 		 
 function reset(){
 		 
-		 alert("game reset");
+		 alert("game reset");// eslint-disable-line no-alert
 		 
 		 playAgain();
 	 }
