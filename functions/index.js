@@ -50,9 +50,9 @@ frontend.post("/loadAi", (req, res) => {
 	else {
 		return "not found";
 	}
-	}).catch( (e) => {
+	}).catch( e => {
 		console.error(e);
-		throw e;
+		//throw e;
 	});
 	
 	 
@@ -71,10 +71,13 @@ frontend.post("/updateStats", (req, res) => {
 			
 			catch(e){
 				console.error(e);
-				throw e;
+				//throw e;
 			}
 			
-			let stats = db.collection("stats").doc("globals");
+			let stats;
+			if(a!=2){
+				stats = db.collection("stats").doc("globals");
+			}//proceeds to default error
 			
 			switch(a){
 				
@@ -96,7 +99,7 @@ frontend.post("/updateStats", (req, res) => {
 							
 						}).catch(e => {
 							console.error(e);
-							throw e;
+							//throw e;
 						});
 				
 					
@@ -118,7 +121,7 @@ frontend.post("/updateStats", (req, res) => {
 							return res.send(result);
 						}).catch(e => {
 							console.error(e);
-							throw e;
+							//throw e;
 						});				
 					break;
 				case -1:
@@ -138,12 +141,12 @@ frontend.post("/updateStats", (req, res) => {
 							return res.send(result);
 						}).catch(e => {
 							console.error(e);
-							throw e;
+							//throw e;
 						});
 									
 					break;
 				default:
-				console.error("unbalanced input detected" + "recieved: " + req.body );
+				console.error(new Error("unbalanced input detected" + "recieved: " + req.body ));
 					break;
 				
 				
@@ -156,7 +159,7 @@ frontend.post("/updateStats", (req, res) => {
 		
 		else {
 			
-			console.error("bad input, " + "recieved: " + req.body);
+			console.error(new Error("bad input, " + "recieved: " + req.body));
 		}
 		
 	}
