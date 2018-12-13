@@ -267,7 +267,8 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 		function store(result){
 			
 			if(!localStorage.statsBatch){
-					
+			
+			//caches unuploaded stats (unused)
 			localStorage.statsBatch = [];
 			}
 			let outcome;
@@ -489,7 +490,7 @@ function reset(){
 	 
 	 
 	 
-	 
+
 	function initStats(){
 	  if(!localStorage.gamesPlayed){
 		  
