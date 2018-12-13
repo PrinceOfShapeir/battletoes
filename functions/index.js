@@ -21,7 +21,7 @@ frontend.use(helmet({
 		
 		directives: {
 			defaultSrc: ["'self'"],
-			styleSrc: ["'self'"],
+			styleSrc: ["'self'"],//synaptic unfortunately requires eval
 			scriptSrc: ["'self'","'unsafe-eval'", 'https://cdnjs.cloudflare.com/ajax/libs/synaptic/1.1.4/synaptic.js', 'https://code.jquery.com/jquery-3.3.1.js']
   }
 	},

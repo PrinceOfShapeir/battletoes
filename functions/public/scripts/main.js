@@ -98,7 +98,7 @@ function downloading(){
 document.getElementById('downloadButton').addEventListener("click", downloading);
 }
 	
-			if(!localStorage.getItem("saved")){
+			if(!localStorage.getItem("saved")&&!document.getElementById('aiInput').files[0]){
 			
 	
 			  $.post("loadAi", (data) => {
@@ -145,25 +145,40 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 			
 			if(testregs.test(tests)){
 				
+				let turn = "Loaded from file! <button id='play2' >click Here To Play Second!</button> Or Just Start Playing";
 				tests = JSON.parse(tests);
+				
+				try {
 				aiActive = Network.fromJSON(tests);
 				trainer = new Trainer(aiActive);
+			}
+			
+			
+			catch (e) {
+				
+				turn = "Upload Read Error";
+				
+			}
 				
 				
-				document.getElementById("turn").innerHTML = 
-				"Loaded from file! <button id='play2' >click Here To Play Second!</button> Or Just Start Playing";
-				document.getElementById('play2').addEventListener("click", aiToPlay);
+				document.getElementById("turn").innerHTML = turn;
 				
+				if(document.getElementById('play2')){
+				document.getElementById('play2').addEventListener("click", aiToPlay);				
 				download();
+			}
+				
 			}
 			
 			else {
 				
-				console.log("upload read error");
+				//console.log("upload read error");
+				document.getElementById("turn").innerHTML = "Upload Read Error";
 				
 			}
 				
-			}  
+			} 
+			//triggers the above 
 			reader.readAsText(tests);
 			
 			
@@ -417,6 +432,8 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 		 
 		 function playAgain(){
 			 
+			 //trainAsync currently unused in order to simulate the ai
+			 //"thinking" thus slowing the response
 			 /*
 			if(trainingData.length>0){
 			//let learner = Network.toJSON
