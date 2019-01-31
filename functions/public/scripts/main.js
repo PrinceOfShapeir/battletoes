@@ -505,6 +505,15 @@ function reset(){
 			"		Ties: "+localStorage.ties+
 			"			Games Played: "+localStorage.gamesPlayed);
 			
+			if(localStorage.totalGames>0){
+				
+				document.getElementById("globals").innerHTML = String("Global Computer Wins: "+localStorage.totalWins+"<br>"+
+			"Global Human Wins: "+localStorage.totalLosses+"<br>"+
+			"Global Ties: "+localStorage.totalTies+"<br>"+
+			"Global Games Played: "+localStorage.totalGames);
+			
+				
+			}
 		  
 	  }
 	  
