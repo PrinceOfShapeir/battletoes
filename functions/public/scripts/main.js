@@ -245,7 +245,14 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 	 
 	 }
 		
-
+		
+		function renderLocals()	{
+			document.getElementById("stats").innerHTML = String("Computer Wins: "+localStorage.computerWins+
+			"		Human Wins: "+localStorage.humanWins+
+			"		Ties: "+localStorage.ties+
+			"			Games Played: "+localStorage.gamesPlayed);
+		}
+	
 		function renderGlobals(){
 			if(localStorage.totalGames > 0) {
 		document.getElementById("globals").innerHTML = String("Global Computer Wins: "+localStorage.totalWins+"<br>"+
@@ -506,14 +513,13 @@ function reset(){
 		  localStorage.ties = 0;
 	  }
 	  else {
-		  			document.getElementById("stats").innerHTML = String("Computer Wins: "+localStorage.computerWins+
-			"		Human Wins: "+localStorage.humanWins+
-			"		Ties: "+localStorage.ties+
-			"			Games Played: "+localStorage.gamesPlayed);
+		  	renderLocals();
 			
 			renderGlobals();
 		  
 	  }
+		
+
 	  
 main();
   }
