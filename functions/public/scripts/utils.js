@@ -50,18 +50,14 @@ const win = function (input){
 	let rows = [];
 	let columns = [];
 	let newColumns = []
-	//let diags = [];
-	/*
-	let columns = new Array(side);
-	columns = columns.fill([]);*/
+
 
 for(let i = 0; i<input.length;){
 rows.push(input.slice(i,side+i));
 i += side;
 }
 
-//console.log(rows);
-//return true;
+
 for(i in rows){
 	
 	if(sum(rows[i])===side){
@@ -86,36 +82,19 @@ for(i in rows){
 	
 }
 	
-	//console.log(columns); return true;
 	for(let i = 0; i<columns.length;){
 newColumns.push(columns.slice(i,side+i));
 i += side;
 }
 
-//console.log(newColumns);
-//}
-
-
-//console.log(rows);
-//console.log(columns);
-//return true;
 for (i in newColumns){
-	//console.log(sum(columns[i])===side);
 	if(sum(newColumns[i])===side){
 		console.log("column win");
 		return true;
 	}
 	
 }
-	/*
-	
-	
-	
-	let inputString = input.slice().toString();
-	let winTest = /(1,(0.5|0),(0.5|0),1,(0.5|0),(0.5|0),1)|/
-	return /(1,){3}|1\d\d1\d\d1/.test(inputString);	
-	
-	*/
+
 	let diag1 = 0;
 	for(i = 0; i<input.length;){
 		
@@ -127,7 +106,7 @@ for (i in newColumns){
 	let diag2 = 0;
 	
 	for(let i = side -1; i<input.length-side+1;){
-	//	console.log(i);
+
 		
 		diag2+= input[i];
 		
@@ -138,22 +117,9 @@ for (i in newColumns){
 		console.log("diagonal win");
 		return true;
 	}
-	/*1
-	for (i in diags){
-	
-	if(sum(diags[i])===side){
-		console.log("diagonal win");
-		return true;
-	}
-}	*/
-	//console.log(sum(rows[0]));
-	//console.log(sum(newColumns[0]));
-	//console.log(diags);
-	//console.log(sum(diags[0]));
-	//console.log(sum(diags[0])===side);
-	//return true;
+
 	return false;
 	
 	
-	//checks rows
+	
 }
