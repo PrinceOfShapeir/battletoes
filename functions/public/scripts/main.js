@@ -18,8 +18,30 @@ var board = new Array(9).fill(0.5);
 
 
 function main () {
+		function initStats(){
+
+		renderGlobals();
+	  	if(!localStorage.gamesPlayed){
+		  
+		  	localStorage.gamesPlayed = 0;
+		  	localStorage.computerWins = 0;
+		  	localStorage.humanWins = 0;
+		  	localStorage.ties = 0;
+		  	renderLocals();
+	  	}
+	  	else {
+		  	renderLocals();
+			
+
+		  
+	  	}
+		
+
+	  
+
+  }
 	
-	
+	initStats();
     //sessionStorage.setItem("playerToken", playerToken);
    
     
@@ -213,7 +235,7 @@ document.getElementById('downloadButton').addEventListener("click", downloading)
 			
 		
 			 let b = board.slice();
-		 let movesRated = new Array(9).fill(0);
+		 let movesRated = Array(9).fill(0);
 		 for(i in b){
 			 
 			if(b[i]===0.5){
@@ -504,30 +526,9 @@ function reset(){
 	 
 	 
 
-	function initStats(){
-	  
-		renderGlobals();
-	  	if(!localStorage.gamesPlayed){
-		  
-		  	localStorage.gamesPlayed = 0;
-		  	localStorage.computerWins = 0;
-		  	localStorage.humanWins = 0;
-		  	localStorage.ties = 0;
-		  	renderLocals();
-	  	}
-	  	else {
-		  	renderLocals();
-			
 
-		  
-	  	}
-		
-
-	  
-main();
-  }
   
-  window.addEventListener("load", initStats());
+  window.addEventListener("load", main());
 		 
 	 
 	 
